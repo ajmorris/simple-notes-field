@@ -14,7 +14,7 @@ Author URI: https://ajmorris.me/
 /*Create custom MetaBox*/
 function CreateTextfield() {
   $screen = 'page';
-  add_meta_box('my-meta-box-id','Text Editor','displayeditor',$screen,'normal','high');
+  add_meta_box('my-meta-box-id','Notes field','displayeditor',$screen,'normal','high');
 }
 add_action( 'add_meta_boxes', 'CreateTextfield' ) ;
 
@@ -24,10 +24,11 @@ function displayeditor($post) {
   $metaeditor = 'metaeditor';
   $displayeditortext = get_post_meta( $post->ID,$metaeditor, true );
   ?>
-    <h2>Secound Editor</h2>
+    <br/>
     <label for="my_meta_box_text">Add Notes about the Page</label>
-      <input type="text" name="my_meta_box_text" id="my_meta_box_text" value="<?php echo $displayeditortext;?>" />
- <?php
+    <input type="text" name="my_meta_box_text" id="my_meta_box_text" value="<?php echo $displayeditortext;?>" />
+    <br/>
+  <?php
 }
 
 /*Save Post Meta*/
@@ -38,3 +39,35 @@ function saveshorttexteditor($post) {
 }
 
 add_action('save_post','saveshorttexteditor');
+
+
+function notes_filter_posts_columns( $columns ) {
+
+  $n_columns = array();
+  $before = 'author'; // move before this
+
+  foreach($columns as $key => $value) {
+    if ($key==$before){
+      $n_columns['metaeditor'] = 'Notes';
+    }
+      $n_columns[$key] = $value;
+  }
+  return $n_columns;
+
+}
+add_filter( 'manage_page_posts_columns', 'notes_filter_posts_columns' );
+
+function display_notes_column( $column, $post_id ) {
+
+  if ( 'metaeditor' === $column ) {
+    $area = get_post_meta( $post_id, 'metaeditor', true );
+
+    if ( ! $area ) {
+      echo '-';
+    } else {
+      echo $area;
+    }
+  }
+
+}
+add_action( 'manage_page_posts_custom_column', 'display_notes_column', 10, 2);
