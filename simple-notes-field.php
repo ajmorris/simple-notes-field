@@ -12,14 +12,14 @@ Author URI: https://ajmorris.me/
 
 
 /*Create custom MetaBox*/
-function CreateTextfield() {
+function aj_create_text_field() {
   $screen = 'page';
   add_meta_box('my-meta-box-id','Notes field','displayeditor',$screen,'normal','high');
 }
-add_action( 'add_meta_boxes', 'CreateTextfield' ) ;
+add_action( 'add_meta_boxes', 'aj_create_text_field' ) ;
 
 /*Display PostMeta*/
-function displayeditor($post) {
+function aj_display_editor($post) {
   global $wbdb;
   $metaeditor = 'metaeditor';
   $displayeditortext = get_post_meta( $post->ID,$metaeditor, true );
@@ -32,13 +32,13 @@ function displayeditor($post) {
 }
 
 /*Save Post Meta*/
-function saveshorttexteditor($post) {
+function aj_save_short_text_editor($post) {
 
   $editor = $_POST['my_meta_box_text'];
   update_post_meta(  $post, 'metaeditor', $editor);
 }
 
-add_action('save_post','saveshorttexteditor');
+add_action('save_post','aj_save_short_text_editor');
 
 
 function notes_filter_posts_columns( $columns ) {
